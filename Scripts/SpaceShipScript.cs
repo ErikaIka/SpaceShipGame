@@ -8,6 +8,7 @@ public class SpaceShipScript : MonoBehaviour
     public int forceTorpedo;
     Rigidbody2D myRB;
     public GameObject torpedo;
+    bool canShot = true;
 
     // Start is called before the first frame update
     void Start()
@@ -27,15 +28,25 @@ public class SpaceShipScript : MonoBehaviour
 
         transform.position = new Vector2(xPos, transform.position.y);
 
-        if (Input.GetButton("Jump"))
+        if (Input.GetButton("Jump") && canShot)
         {
-            Vector2 posTorpedo = new Vector2(transform.position.x, transform.position.y + 1.4f);
+            Vector2 posTorpedo = new Vector2(transform.position.x, transform.position.y + 1.5f);
             GameObject clone = Instantiate(torpedo, posTorpedo, Quaternion.identity);
 
             Rigidbody2D cloneRB = clone.GetComponent<Rigidbody2D>();
-            cloneRB.AddForce(new Vector2(0, 500));
-//            Vector2 direccion = new Vector2(0f, 1f);
-  //          cloneRB.velocity = direccion * forceTorpedo;
+ 
+            Vector2 direccion = new Vector2(0f, 1f);
+            cloneRB.velocity = direccion * forceTorpedo;
+            canShot = false;
         }
+    }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        Debug.Log("Nave: He chocado");
+    }
+
+    public void SetCanShot()
+    {
+        canShot = true;
     }
 }
