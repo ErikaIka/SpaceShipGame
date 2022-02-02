@@ -4,16 +4,14 @@ using UnityEngine;
 
 public class EnemyScript : MonoBehaviour
 {
-    Vector3 posEnemy;
-    public Transform posEnemyTransform;
+
+    bool toRight = true;
+    float sleep = 0.8f;
 
     // Start is called before the first frame update
     void Start()
     {
-        posEnemy.Set(posEnemyTransform.position.x, posEnemyTransform.position.y, 0);
-        InvokeRepeating("MoveEnemy", 0.8f, 0.8f);
-
-
+        StartCoroutine(Wait());
     }
 
     // Update is called once per frame
@@ -22,15 +20,41 @@ public class EnemyScript : MonoBehaviour
         
     }
 
+    IEnumerator Wait()
+    {
+        yield return new WaitForSeconds(sleep);
+        MoveEnemy();
+        StartCoroutine(Wait());
+    }
+
     void MoveEnemy()
     {
-        transform.Translate(Vector3.right);
-
-        if (transform.position.x == 6f)
+        if (toRight)
         {
-            transform.position = posEnemy;
-
-
+            if(transform.position.x > 5.5)
+            {
+                sleep -= 0.05f;
+                toRight = false;
+                transform.Translate(Vector3.down);
+            }
+            else
+            {
+                transform.Translate(Vector3.right);
+            }
         }
+        else
+        {
+            if (transform.position.x < -5.5)
+            {
+                sleep -= 0.05f;
+                toRight = true;
+                transform.Translate(Vector3.down);
+            }
+            else
+            {
+                transform.Translate(Vector3.left);
+            }
+        }
+        
     }
 }
